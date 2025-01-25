@@ -30,7 +30,7 @@ export function keydownListener (evt) {
       popupIsClosed(OpenedPopup)}
 };
 
-//функция добавляет в попап класс с параметрами  для плавного открытия модального окна
+//функция добавляет в попап класс с параметрами  для плавного открытия модального окна 
 export function popupIsAnimated (PopupElement) {
     PopupElement.classList.add('popup_is-animated');  
 };

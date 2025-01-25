@@ -1,6 +1,6 @@
 import {popupIsClosed} from './modal.js';
 import { AddPlaces, imageOpened } from '../index.js';
-// @todo: Темплейт карточки
+// @todo: Темплейт карточки 
 // - получаем доступ к содержимому шаблона
     const cardTemplate = document.querySelector('#card-template').content;
 // @todo: DOM узлы
