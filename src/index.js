@@ -103,7 +103,7 @@ buttonClosePopup.forEach((evt) => {
     })
     });
 
-//слушатель клика по оверлэю для каждого модального окна     
+//слушатель клика по оверлэю для каждого модального окна
 popupProfile.addEventListener('click', listenerPopupOverlay);
 popupPlaceAdd .addEventListener('click', listenerPopupOverlay);
 popupImage.addEventListener('click', listenerPopupOverlay); 

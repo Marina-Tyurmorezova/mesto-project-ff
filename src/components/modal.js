@@ -24,7 +24,7 @@ export function listenerKeydownEscape (evt) {
     }
 };
 
-//функция добавляет в попап класс с параметрами  для плавного открытия модального окна 
+//функция добавляет в попап класс с параметрами  для плавного открытия модального окна
 export function smoothAnimationPopup (popupElement) {
     popupElement.classList.add('popup_is-animated');  
 };

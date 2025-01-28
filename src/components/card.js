@@ -40,4 +40,4 @@ export function deleteCard(itemPlaces) {
 //Если лайкнуть карточку, сердечко поменяет цвет
 export function likedCard (like) {
     like.target.classList.toggle('card__like-button_is-active');
-};  
+};
