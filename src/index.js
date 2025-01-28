@@ -1,8 +1,10 @@
 import './pages/index.css';
 import {initialCards} from './components/cards.js';
-import {createCard, deleteCard, isLiked, handleCardSubmit, formCard, placeList} from './components/card.js';
-import {popupIsOpened, popupIsClosed, popupOverlayListener, popupOverlay, keydownListener, popupIsAnimated} from './components/modal.js';
-
+import {createCard, deleteCard, isLiked, AddPlaces} from './components/card.js';
+import {popupIsOpened, popupIsClosed, popupOverlayListener, keydownListener, popupIsAnimated} from './components/modal.js';
+// @todo: DOM узлы
+// - расположение выводимых карточек
+const placeList = document.querySelector('.places__list');
 // @todo: Вывести карточки на страницу 
 // Используя полученную функцию, вывести все карточки из массива на страницу в элемент
 initialCards.forEach(function(cardItem) {
@@ -12,8 +14,7 @@ initialCards.forEach(function(cardItem) {
 //@todo: В проекте есть три модальных окна. Они открываются по нажатию кнопок «Редактировать» и «+» и при нажатии на картинку, 
 //а закрываются — при клике по крестику в правом верхнем углу
 const popupWindow = document.querySelectorAll('.popup');
-const EditProfile = document.querySelector('.popup_type_edit');
-export const AddPlaces = document.querySelector('.popup_type_new-card');
+const EditProfile = document.querySelector('.popup_type_edit'); 
 const btnClosePopup = document.querySelectorAll('.popup__close');
 //вызов функции добавляющей класс для плавного открытия и закрытия попапов
 popupWindow.forEach((popup) => {
@@ -33,11 +34,17 @@ document.addEventListener('click', (evt) => {
             };
     }) 
 
+//РЕВЬЮ: установить слушатель клика по оверлэю один раз в файле index.js для каждого модального окна в глобальном скоупе.    
+EditProfile.addEventListener('click', popupOverlayListener);
+AddPlaces.addEventListener('click', popupOverlayListener);
+//PopupImage.addEventListener('click', popupOverlayListener); 
+
 //закрытие модального окна по клику на крестик
 btnClosePopup.forEach((evt) => {
 evt.addEventListener('click', () => {
-    let popupParent = evt.closest('.popup');
+    const popupParent = evt.closest('.popup');
     popupIsClosed(popupParent);
+    console.log (evt, popupParent);
 })
 });
 
@@ -66,14 +73,36 @@ function handleEditProfileSubmit (evt) {
 formElement.addEventListener ('submit', handleEditProfileSubmit);
 
  //TODO: Дайте пользователю возможность добавлять карточки
-formCard.addEventListener ('submit', handleCardSubmit);
+const formCard = document.forms['new-place'];
+const namePlaceInput = formCard.elements['place-name'];
+const linkPlaceInput = formCard.elements.link;
+function handleCardSubmit (evt) {
+    evt.preventDefault();
+    const namePI = namePlaceInput.value;
+    const linkPI = linkPlaceInput.value;
+    //получаем данные (имя и ссылку) новой карточки
+    const newPlaceCard = 
+        {name: namePI,
+        link: linkPI
+        };
+    //выводим первой новую карточку
+    placeList.prepend(createCard(newPlaceCard, deleteCard));
+    //очищаем поля модалки
+    formCard.reset();
+    //закрываем модалку
+    popupIsClosed(AddPlaces);
+ }
+ formCard.addEventListener ('submit', handleCardSubmit);
+
+
 
  //TODO: Открытие попапа с картинкой
  //Функцию, которая обрабатывает клик по изображению, 
  //нужно, как и лайк, передать аргументом в функцию создания карточки
  const PopupImage = document.querySelector('.popup_type_image');
- export function imageOpened (imgLink,imgAlt) {
+ function imageOpened (imgLink,imgAlt) {
     PopupImage.querySelector('.popup__image').src = imgLink;
     PopupImage.querySelector('.popup__caption').textContent = imgAlt;
     popupIsOpened(PopupImage);
  }
+
