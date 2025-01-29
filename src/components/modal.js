@@ -18,10 +18,9 @@ export function listenerPopupOverlay (evt) {
 export function listenerKeydownEscape (evt) {
     if (evt.key === 'Escape') {
       const openedPopup = document.querySelector('.popup_is-opened');
-      closePopup(openedPopup)
-      //снимаем слушатель нажатия клавиши
-    document.removeEventListener('keydown',listenerKeydownEscape);
+      closePopup(openedPopup);    
     }
+    console.log('нажата клавиша',evt.key);
 };
 
 //функция добавляет в попап класс с параметрами  для плавного открытия модального окна

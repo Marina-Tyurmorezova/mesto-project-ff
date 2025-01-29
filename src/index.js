@@ -5,7 +5,7 @@ import {openPopup, closePopup, listenerPopupOverlay, keydownListener, smoothAnim
 // кнопки
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const buttonAddPlace = document.querySelector('.profile__add-button');
-const buttonClosePopup = document.querySelectorAll('.popup__close');
+const buttonClosePopupList = document.querySelectorAll('.popup__close');
 // - расположение выводимых карточек
 const placeList = document.querySelector('.places__list');
 //объявление модальных окон 
@@ -23,13 +23,14 @@ const descProfile = document.querySelector('.profile__description');
 const formCard = document.forms['new-place'];
 const namePlaceInput = formCard.elements['place-name'];
 const linkPlaceInput = formCard.elements.link;
+//переменные к функции editProfileDataDefault 
+const profileName= document.querySelector('.profile__title');
+const profileDescription = document.querySelector('.profile__description');
+const profileNamePopupDefault = document.forms['edit-profile'].elements.name;
+const profileDescriptionPopupDefault = document.forms['edit-profile'].elements.description;
 
 //TODO: При открытии формы поля «Имя» и «О себе» должны быть заполнены теми значениями, которые отображаются на странице.
 function editProfileDataDefault () {
-    const profileName= document.querySelector('.profile__title');
-    const profileDescription = document.querySelector('.profile__description');
-    const profileNamePopupDefault = document.forms['edit-profile'].elements.name;
-    const profileDescriptionPopupDefault = document.forms['edit-profile'].elements.description;
     profileNamePopupDefault.value = profileName.textContent;
     profileDescriptionPopupDefault.value = profileDescription.textContent;
 }
@@ -96,7 +97,7 @@ buttonAddPlace.addEventListener('click', () => {
 })
 
 //закрытие модального окна по клику на крестик
-buttonClosePopup.forEach((evt) => {
+buttonClosePopupList.forEach((evt) => {
     evt.addEventListener('click', () => {
         const popupParentContainer = evt.closest('.popup');
         closePopup(popupParentContainer);
