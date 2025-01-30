@@ -14,13 +14,12 @@ export function listenerPopupOverlay (evt) {
     closePopup(evt.target);
 }
 
-//функция слушателя нажатия клавиши Esc (работает)
+//функция слушателя нажатия клавиши Esc
 export function listenerKeydownEscape (evt) {
     if (evt.key === 'Escape') {
       const openedPopup = document.querySelector('.popup_is-opened');
       closePopup(openedPopup);    
     }
-    console.log('нажата клавиша',evt.key);
 };
 
 //функция добавляет в попап класс с параметрами  для плавного открытия модального окна
