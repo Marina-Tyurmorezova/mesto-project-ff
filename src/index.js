@@ -113,3 +113,8 @@ popupImage.addEventListener('click', listenerPopupOverlay);
 formEditProfileElement.addEventListener ('submit', handleSubmitEditProfile);
 //слушатель отправки формы при добавлении новой карточки
 formCard.addEventListener ('submit', handleCardSubmit);
+
+//ПР7: Слушатель поля "имя"  формы редактирования профиля
+nameInput.addEventListener('input', function (evt){ //вместо функции вызвать экспортированную функцию валидации
+
+})
