@@ -116,5 +116,5 @@ formCard.addEventListener ('submit', handleCardSubmit);
 
 //ПР7: Слушатель поля "имя"  формы редактирования профиля
 nameInput.addEventListener('input', function (evt){ //вместо функции вызвать экспортированную функцию валидации
-
+    console.log(evt.target.validity.valid); //выводим в консоль результат валидности
 })
