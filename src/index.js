@@ -38,6 +38,8 @@ const buttonFormSubmit = popupForm.querySelector('.popup__button');
 function editProfileDataDefault () {
     profileNamePopupDefault.value = profileName.textContent;
     profileDescriptionPopupDefault.value = profileDescription.textContent;
+    //при повторном открытии и заполнении данных формы профиля необходимо вызвать очистку ошибок валидации, которые могли остаться с прошлого открытия
+    hideInputError(popupForm, popupFormInput);
 }
 
 //TODO: Редактирование имени и информации о себе (SUBMIT по шаблону из задания) 
@@ -98,14 +100,14 @@ buttonEditProfile.addEventListener('click', () => {
 //открытие модального окна добавления карточки по клику на кнопку
 buttonAddPlace.addEventListener('click', () => {
     //попап добавления карточки
-    openPopup(popupPlaceAdd );
+    openPopup(popupPlaceAdd );    
 })
 
 //закрытие модального окна по клику на крестик
 buttonClosePopupList.forEach((evt) => {
     evt.addEventListener('click', () => {
         const popupParentContainer = evt.closest('.popup');
-        closePopup(popupParentContainer);
+        closePopup(popupParentContainer);        
     })
     });
 
@@ -120,9 +122,6 @@ formEditProfileElement.addEventListener ('submit', handleSubmitEditProfile);
 formCard.addEventListener ('submit', handleCardSubmit);
 
 //ПР7: Слушатель поля "имя"  формы редактирования профиля ---------------------------------------------------------------------------
-nameInput.addEventListener('input', function (evt){ //вместо функции вызвать экспортированную функцию валидации
-    console.log(evt.target.validity.valid); //выводим в консоль результат валидности
-})
 
 // Функция, которая добавляет класс с ошибкой
 const showInputError = (popupForm, popupFormInput, errorMessage) => {
@@ -143,61 +142,7 @@ const hideInputError = (popupForm, popupFormInput) => {
     popupFormError.textContent = '';
   };
 
-  // Функция, которая проверяет валидность поля
-const isValid = (popupForm, popupFormInput) => {
-
-    if (popupFormInput.validity.patternMismatch) {
-      // встроенный метод setCustomValidity принимает на вход строку и заменяет ею стандартное сообщение об ошибке
-        popupFormInput.setCustomValidity(popupFormInput.dataset.errorMessage);
-     } else {
-        popupFormInput.setCustomValidity("");
-    }
-
-    if (!popupFormInput.validity.valid) {
-      if (popupFormInput.validity.valueMissing === true) {
-        popupFormInput.setCustomValidity("Вы пропустили это поле")
-      }
-      // Если поле не проходит валидацию, покажем ошибку
-      showInputError(popupForm, popupFormInput, popupFormInput.validationMessage);
-      console.log(popupFormInput.validationMessage);
-    } else {
-      // Если проходит, скроем
-      hideInputError(popupForm, popupFormInput);
-    }
-  };
-  
-  // Вызовем функцию isValid на каждый ввод символа
-  const setEventListeners = (popupForm) => {
-    // Находим все поля внутри формы, сделаем из них массив методом Array.from
-    const inputList = Array.from(popupForm.querySelectorAll('.popup__input'));  
-    // Обойдём все элементы полученной коллекции
-    inputList.forEach((popupFormInput) => {
-      // каждому полю добавим обработчик события input
-      popupForm.addEventListener('input', () => {
-        // Внутри колбэка вызовем isValid, передав ей форму и проверяемый элемент
-        isValid(popupForm, popupFormInput);
-
-        // Вызовем toggleButtonState и передадим ей массив полей и кнопку
-      toggleButtonState(inputList, buttonFormSubmit);
-      });
-    });
-  }; 
-
-  const enableValidation = () => {
-    // Найдём все формы с указанным классом в DOM, сделаем из них массив методом Array.from
-    const formList = Array.from(document.querySelectorAll('.popup__form'));
-  
-    // Переберём полученную коллекцию
-    formList.forEach((popupForm) => {
-      // Для каждой формы вызовем функцию setEventListeners, передав ей элемент формы
-      setEventListeners(popupForm);
-    });
-  };
-  
-  // Вызовем функцию
-  enableValidation(); 
-
- // Блокируем кнопку отправки формы. Функция принимает массив полей
+   // Блокируем кнопку отправки формы. Функция принимает массив полей
 const hasInvalidInput = (inputList) => {
   // проходим по этому массиву методом some
   return inputList.some((popupFormInput) => {
@@ -219,3 +164,58 @@ const toggleButtonState = (inputList, buttonFormSubmit) => {
       buttonFormSubmit.classList.remove('popup__button__submit_inactive');
   }
 }; 
+
+  // Функция, которая проверяет валидность поля
+const isValid = (popupForm, popupFormInput) => {
+    if (popupFormInput.validity.patternMismatch) {
+      // встроенный метод setCustomValidity принимает на вход строку и заменяет ею стандартное сообщение об ошибке
+        popupFormInput.setCustomValidity(popupFormInput.dataset.errorMessage);
+     } else {
+        popupFormInput.setCustomValidity("");
+    }
+
+    if (!popupFormInput.validity.valid) {
+      if (popupFormInput.validity.valueMissing === true) {
+        popupFormInput.setCustomValidity("Вы пропустили это поле")
+      }
+      // Если поле не проходит валидацию, покажем ошибку
+      showInputError(popupForm, popupFormInput, popupFormInput.validationMessage);
+      //console.log(popupFormInput.validationMessage);
+    } else {
+      // Если проходит, скроем
+      hideInputError(popupForm, popupFormInput);
+    }
+  };
+  
+  // Вызовем функцию isValid на каждый ввод символа
+  const setEventListeners = (popupForm) => {
+    // Находим все поля внутри формы, сделаем из них массив методом Array.from
+    const inputList = Array.from(popupForm.querySelectorAll('.popup__input'));
+    toggleButtonState(inputList, buttonFormSubmit);
+    // Обойдём все элементы полученной коллекции
+    inputList.forEach((popupFormInput) => {
+      // каждому полю добавим обработчик события input
+      popupForm.addEventListener('input', () => {
+        // Внутри колбэка вызовем isValid, передав ей форму и проверяемый элемент
+        isValid(popupForm, popupFormInput);
+
+        // Вызовем toggleButtonState и передадим ей массив полей и кнопку
+      toggleButtonState(inputList, buttonFormSubmit);
+      });
+    });
+  }; 
+
+  const enableValidation = () => {
+    // Найдём все формы с указанным классом в DOM, сделаем из них массив методом Array.from
+    const formList = Array.from(document.querySelectorAll('.popup__form'));
+    console.log(formList);
+    // Переберём полученную коллекцию
+    formList.forEach((popupForm) => {
+      // Для каждой формы вызовем функцию setEventListeners, передав ей элемент формы
+      setEventListeners(popupForm);
+    });
+  };
+  
+  // Вызовем функцию
+  enableValidation(); 
+ 
