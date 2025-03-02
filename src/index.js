@@ -2,7 +2,7 @@ import './pages/index.css';
 import {initialCards} from './components/cards.js';
 import {createCard, deleteCard, isLiked} from './components/card.js';
 import {openPopup, closePopup, listenerPopupOverlay, keydownListener, smoothAnimationPopup} from './components/modal.js';
-import {popupForm, popupFormInput, enableValidation, clearValidation} from './components/validation.js';
+import {popupForm, popupFormInput, enableValidationFormList, clearValidation, hideInputError} from './components/validation.js';
 // кнопки
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const buttonAddPlace = document.querySelector('.profile__add-button');
@@ -36,7 +36,7 @@ function editProfileDataDefault () {
     profileNamePopupDefault.value = profileName.textContent;
     profileDescriptionPopupDefault.value = profileDescription.textContent;
     //при повторном открытии и заполнении данных формы профиля необходимо вызвать очистку ошибок валидации, которые могли остаться с прошлого открытия
-    clearValidation(popupForm, popupFormInput);
+    hideInputError(popupForm, popupFormInput);
     
 }
 
@@ -99,7 +99,7 @@ buttonEditProfile.addEventListener('click', () => {
 buttonAddPlace.addEventListener('click', () => {
     //попап добавления карточки
     openPopup(popupPlaceAdd ); 
-    clearValidation(popupForm, popupFormInput);
+    hideInputError(popupForm, popupFormInput);
 })
 
 //закрытие модального окна по клику на крестик
@@ -121,11 +121,4 @@ formEditProfileElement.addEventListener ('submit', handleSubmitEditProfile);
 formCard.addEventListener ('submit', handleCardSubmit);
 
 //ПР7:  ---------------------------------------------------------------------------
-enableValidation({
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-  }); 
+enableValidationFormList();
