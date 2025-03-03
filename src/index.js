@@ -2,7 +2,7 @@ import './pages/index.css';
 import {initialCards} from './components/cards.js';
 import {createCard, deleteCard, isLiked} from './components/card.js';
 import {openPopup, closePopup, listenerPopupOverlay, keydownListener, smoothAnimationPopup} from './components/modal.js';
-import {popupForm, popupFormInput, enableValidation, clearValidation, hideInputError} from './components/validation.js';
+import {ValidationConfig, enableValidation, clearValidation} from './components/validation.js';
 // кнопки
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const buttonAddPlace = document.querySelector('.profile__add-button');
@@ -33,9 +33,10 @@ const profileDescriptionPopupDefault = document.forms['edit-profile'].elements.d
 
 //TODO: При открытии формы поля «Имя» и «О себе» должны быть заполнены теми значениями, которые отображаются на странице.
 function editProfileDataDefault () {
+    //очищаем оибки валидации перед открытием
+    clearValidation(popupProfile, ValidationConfig);
     profileNamePopupDefault.value = profileName.textContent;
-    profileDescriptionPopupDefault.value = profileDescription.textContent;
-    clearValidation(popupProfile);
+    profileDescriptionPopupDefault.value = profileDescription.textContent;    
 }
 
 //TODO: Редактирование имени и информации о себе (SUBMIT по шаблону из задания) 
@@ -97,7 +98,7 @@ buttonEditProfile.addEventListener('click', () => {
 buttonAddPlace.addEventListener('click', () => {
     //попап добавления карточки
     openPopup(popupPlaceAdd );
-    clearValidation(popupPlaceAdd);
+    clearValidation(popupPlaceAdd, ValidationConfig);
 })
 
 //закрытие модального окна по клику на крестик
@@ -119,19 +120,5 @@ formEditProfileElement.addEventListener ('submit', handleSubmitEditProfile);
 formCard.addEventListener ('submit', handleCardSubmit);
 
 //ПР7:  ---------------------------------------------------------------------------
-// включение валидации вызовом enableValidation
-// все настройки передаются при вызове
-
-enableValidation();
-
-//enableValidation({
-//    formSelector: '.popup__form',
-//    inputSelector: '.popup__input',
-//    submitButtonSelector: '.popup__button',
-//    inactiveButtonClass: 'popup__button_disabled',
-//    inputErrorClass: 'popup__input_type_error',
-//    errorClass: 'popup__error_visible'
-//  }); 
-
- // очистка ошибок валидации вызовом clearValidation
-//clearValidation(profileForm, validationConfig); 
+// включение валидации вызовом enableValidation все настройки передаются при вызове
+enableValidation(ValidationConfig);

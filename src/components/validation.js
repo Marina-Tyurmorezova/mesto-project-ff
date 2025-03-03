@@ -1,26 +1,27 @@
-//Из файла экспортируется только функция активации валидации enableValidation 
-
-// переменные для проверки валидности
-export const popupForm = document.querySelector('.popup__form');
-export const popupFormInput = popupForm.querySelector('.popup__input');
-export const popupFormInputTextError = popupForm.querySelector('.popup__input__error');
-export const buttonFormSubmit = popupForm.querySelector('.popup__button');
+export const ValidationConfig = ({
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}); 
 
 // Функция, которая добавляет класс с ошибкой
-const showInputError = (popupForm, popupFormInput, errorMessage) => {
+const showInputError = (popupForm, popupFormInput, errorMessage, config) => {
     // Выбираем элемент ошибки на основе уникального класса 
     const popupFormError = popupForm.querySelector(`.${popupFormInput.id}_error`);
-    popupFormInput.classList.add('popup__input_type_error');
+    popupFormInput.classList.add(config['inputErrorClass']);
     popupFormError.textContent = errorMessage;
-    popupFormError.classList.add('popup__error_visible');
+    popupFormError.classList.add(config['errorClass']);
   };
 
 // Функция, которая удаляет класс с ошибкой
-export const hideInputError = (popupForm, popupFormInput) => {
+const hideInputError = (popupForm, popupFormInput, config) => {
   // Находим элемент ошибки
     const popupFormError = popupForm.querySelector(`.${popupFormInput.id}_error`);
-    popupFormInput.classList.remove('popup__input_type_error');    
-    popupFormError.classList.remove('popup__error_visible');
+    popupFormInput.classList.remove(config['inputErrorClass']);    
+    popupFormError.classList.remove(config['errorClass']);
   //очистим ошибку
     popupFormError.textContent = '';
   };
@@ -35,21 +36,21 @@ const hasInvalidInput = (inputList) => {
 }; 
 
 // Функция принимает массив полей ввода и элемент кнопки, состояние которой нужно менять
-const toggleButtonState = (inputList, buttonFormSubmit) => {
+const toggleButtonState = (inputList, buttonFormSubmit, config) => {
   // Если есть хотя бы один невалидный инпут
   if (hasInvalidInput(inputList)) {
       // сделай кнопку неактивной
       buttonFormSubmit.disabled = true;
-      buttonFormSubmit.classList.add('popup__button_disabled');
+      buttonFormSubmit.classList.add(config['inactiveButtonClass']);
   } else {
       // иначе сделай кнопку активной
       buttonFormSubmit.disabled = false;
-      buttonFormSubmit.classList.remove('popup__button_disabled');
+      buttonFormSubmit.classList.remove(config['inactiveButtonClass']);
   }
 }; 
 
   // Функция, которая проверяет валидность поля
-const isValid = (popupForm, popupFormInput) => {
+const isValid = (popupForm, popupFormInput, config) => {
     if (popupFormInput.validity.patternMismatch) {
       // встроенный метод setCustomValidity принимает на вход строку и заменяет ею стандартное сообщение об ошибке
         popupFormInput.setCustomValidity(popupFormInput.dataset.errorMessage);
@@ -62,58 +63,51 @@ const isValid = (popupForm, popupFormInput) => {
         popupFormInput.setCustomValidity("Вы пропустили это поле")
       }      
       // Если поле не проходит валидацию, покажем ошибку
-      showInputError(popupForm, popupFormInput, popupFormInput.validationMessage);
+      showInputError(popupForm, popupFormInput, popupFormInput.validationMessage, config);
     } else {
       // Если проходит, скроем
-      hideInputError(popupForm, popupFormInput);
+      hideInputError(popupForm, popupFormInput, config);
     }
   };
   
   // Вызовем функцию isValid на каждый ввод символа
-  const setEventListeners = (popupForm) => {
+  const setEventListeners = (popupForm, config) => {
     // Находим все поля внутри формы, сделаем из них массив методом Array.from
-    const inputList = Array.from(popupForm.querySelectorAll('.popup__input'));
+    const inputList = Array.from(popupForm.querySelectorAll(config['inputSelector']));
     //выбираем кнопку отправки внутри формы
-    const buttonFormSubmit = popupForm.querySelector('.popup__button');
-    toggleButtonState(inputList, buttonFormSubmit);
+    const buttonFormSubmit = popupForm.querySelector(config['submitButtonSelector']);
+    toggleButtonState(inputList, buttonFormSubmit, config);
     // Обойдём все элементы полученной коллекции
     inputList.forEach((popupFormInput) => {
       // каждому полю добавим обработчик события input
       popupFormInput.addEventListener('input', () => {
         // Внутри колбэка вызовем isValid, передав ей форму и проверяемый элемент
-        isValid(popupForm, popupFormInput);
+        isValid(popupForm, popupFormInput, config);
         // Вызовем toggleButtonState и передадим ей массив полей и кнопку
-        toggleButtonState(inputList, buttonFormSubmit);
+        toggleButtonState(inputList, buttonFormSubmit,config);
       });
     });
   }; 
 
 //делайте функцию enableValidation ответственной за включение валидации всех форм. 
 // Пусть она принимает все нужные функциям классы и селекторы элементов как объект настроек
-export const enableValidation = () => {
+export const enableValidation = (config) => {
     // Найдём все формы с указанным классом в DOM, сделаем из них массив методом Array.from
-    const formList = Array.from(document.querySelectorAll('.popup__form'));
+    const formList = Array.from(document.querySelectorAll(config['formSelector']));
     // Переберём полученную коллекцию
     formList.forEach((popupForm) => {
       // Для каждой формы вызовем функцию setEventListeners, передав ей элемент формы
-      setEventListeners(popupForm);
+      setEventListeners(popupForm, config);
     });
 };
 
-//тут всё логично. По сути, это как одна большая функция, которая разбита на несколько. 
-// То есть одна точка входа в модуль. Функция enableValidation дальше по цепочке вызывает другие функции отвечающие 
-// за навешивания слушателя инпута, скрытие и показ ошибок и т.д. Всем этим функциям нужны данные, которые есть в config. 
-// Для этого передаем в enableValidation объект конфига со всеми данными, с помощью деструктуризации, например, 
-// достаем все необходимые данные, а остаток пробрасываем дальше во вложенные функции. Таким образом enableValidation 
-// должен принимать config и прокидывать его вглубь, но конфиг не должен экспортироваться или быть доступен каким-либо другим 
-// способом в других функциях. Только из аргументов по цепочке от enableValidation
-
-
-export function clearValidation (popupForm) {
-  const popupFormInputList = Array.from(popupForm.querySelectorAll('.popup__input'));
+//очистка ошибок валидации
+export function clearValidation (popupForm, config) {
+  const popupFormInputList = Array.from(popupForm.querySelectorAll(config['inputSelector']));
   popupFormInputList.forEach((popupFormInput) => {
     const popupFormError = popupForm.querySelector(`.${popupFormInput.id}_error`);
-    hideInputError(popupForm, popupFormInput);
+    hideInputError(popupForm, popupFormInput, config);
     popupFormError.textContent = '';
+    popupFormInput.value = '';
   })
 }
