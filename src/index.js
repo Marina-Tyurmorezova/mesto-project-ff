@@ -3,6 +3,9 @@ import {initialCards} from './components/cards.js';
 import {createCard, deleteCard, isLiked} from './components/card.js';
 import {openPopup, closePopup, listenerPopupOverlay, keydownListener, smoothAnimationPopup} from './components/modal.js';
 import {ValidationConfig, enableValidation, clearValidation} from './components/validation.js';
+import { getInitialUser } from './components/api.js';
+import { data } from 'autoprefixer';
+
 // кнопки
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const buttonAddPlace = document.querySelector('.profile__add-button');
@@ -29,7 +32,19 @@ const profileName= document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 const profileNamePopupDefault = document.forms['edit-profile'].elements.name;
 const profileDescriptionPopupDefault = document.forms['edit-profile'].elements.description;
-
+const avatarUser = document.querySelector('.profile__image');
+//вызов получения данных пользователя
+getInitialUser()
+.then(data => {
+    console.log(data)
+    profileName.textContent = data.name;
+    profileDescription.textContent = data.about;
+    avatarUser.style.textContent = data.avatar;
+    //console.log('имя', profileName);
+})
+.catch((err) => {
+    console.log('Ошибка. Запрос не выполнен');
+})
 
 //TODO: При открытии формы поля «Имя» и «О себе» должны быть заполнены теми значениями, которые отображаются на странице.
 function editProfileDataDefault () {
@@ -122,3 +137,4 @@ formCard.addEventListener ('submit', handleCardSubmit);
 //ПР7:  ---------------------------------------------------------------------------
 // включение валидации вызовом enableValidation все настройки передаются при вызове
 enableValidation(ValidationConfig);
+
