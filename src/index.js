@@ -3,7 +3,7 @@ import {initialCards} from './components/cards.js';
 import {createCard, deleteCard, isLiked} from './components/card.js';
 import {openPopup, closePopup, listenerPopupOverlay, keydownListener, smoothAnimationPopup} from './components/modal.js';
 import {ValidationConfig, enableValidation, clearValidation} from './components/validation.js';
-import { getInitialUser } from './components/api.js';
+import { getInitialUser , getCardList, editUserProfile} from './components/api.js';
 import { data } from 'autoprefixer';
 
 // кнопки
@@ -33,18 +33,21 @@ const profileDescription = document.querySelector('.profile__description');
 const profileNamePopupDefault = document.forms['edit-profile'].elements.name;
 const profileDescriptionPopupDefault = document.forms['edit-profile'].elements.description;
 const avatarUser = document.querySelector('.profile__image');
-//вызов получения данных пользователя
-getInitialUser()
-.then(data => {
-    console.log(data)
+//для работы с Id пользователя
+let userId = null;
+//для загрузки данных пользователя и карточек 
+Promise.all([getInitialUser(),getCardList()])
+.then(([data, cardData]) => {
+    //получение данных пользователя
     profileName.textContent = data.name;
     profileDescription.textContent = data.about;
     avatarUser.style.textContent = data.avatar;
-    //console.log('имя', profileName);
+    //вывод карточек с сервера
+    cardData.forEach(function(cardItem) {
+        placeList.append(createCard(cardItem, deleteCard, openPopupImage));
+    })
 })
-.catch((err) => {
-    console.log('Ошибка. Запрос не выполнен');
-})
+
 
 //TODO: При открытии формы поля «Имя» и «О себе» должны быть заполнены теми значениями, которые отображаются на странице.
 function editProfileDataDefault () {
@@ -61,8 +64,20 @@ function handleSubmitEditProfile (evt) {
     const job = jobInput.value; 
     nameProfile.textContent = name;
     descProfile.textContent = job;
+
+    //создаем объект с новыми данными пользователя
+    const dataUserProfile = {
+        name: nameInput.value,
+        about: jobInput.value
+    };
+    console.log (dataUserProfile);
     closePopup(popupProfile);
+    //отправляем данные на сервер
+    editUserProfile(dataUserProfile)   
 }
+
+
+
 
 //TODO: Дайте пользователю возможность добавлять карточки
 function handleCardSubmit (evt) {
@@ -93,9 +108,9 @@ function handleCardSubmit (evt) {
  }
 
 // @todo: Вывести карточки на страницу 
-initialCards.forEach(function(cardItem) {
-    placeList.append(createCard(cardItem, deleteCard, openPopupImage));
-});
+//initialCards.forEach(function(cardItem) {
+//    placeList.append(createCard(cardItem, deleteCard, openPopupImage));
+//});
 
 //вызов функции добавляющей класс для плавного открытия и закрытия попапов
 popupList.forEach((popup) => {

@@ -27,3 +27,27 @@ export const getInitialUser = () => {
 
 
 //Загрузка карточек с сервера GET https://mesto.nomoreparties.co/v1/wff-cohort-31/cards 
+export const getCardList = () => {
+  return fetch(`${configApi.baseUrl}/cards`, {
+    headers: configApi.headers
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+      return Promise.reject(`Ошибка: ${res.status}`);
+})
+}
+
+//Редактирование профиля
+export const editUserProfile = (userUpdateInfo) => {
+  return fetch(`${configApi.baseUrl}/users/me`, {
+    method: 'PATCH',
+    headers: configApi.headers ,
+    body: JSON.stringify(userUpdateInfo)
+  })
+  .then((res) => {
+    //return res.json();
+    console.log (res)
+  })
+}
