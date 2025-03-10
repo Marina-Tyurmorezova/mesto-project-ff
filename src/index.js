@@ -3,7 +3,7 @@ import {initialCards} from './components/cards.js';
 import {createCard, deleteCard, isLiked} from './components/card.js';
 import {openPopup, closePopup, listenerPopupOverlay, keydownListener, smoothAnimationPopup} from './components/modal.js';
 import {ValidationConfig, enableValidation, clearValidation} from './components/validation.js';
-import { getInitialUser , getCardList, editUserProfile} from './components/api.js';
+import { getInitialUser , getCardList, editUserProfile, addNewCard} from './components/api.js';
 import { data } from 'autoprefixer';
 
 // кнопки
@@ -51,7 +51,7 @@ Promise.all([getInitialUser(),getCardList()])
 
 //TODO: При открытии формы поля «Имя» и «О себе» должны быть заполнены теми значениями, которые отображаются на странице.
 function editProfileDataDefault () {
-    //очищаем оибки валидации перед открытием
+    //очищаем ошибки валидации перед открытием
     clearValidation(popupProfile, ValidationConfig);
     profileNamePopupDefault.value = profileName.textContent;
     profileDescriptionPopupDefault.value = profileDescription.textContent;    
@@ -70,14 +70,11 @@ function handleSubmitEditProfile (evt) {
         name: nameInput.value,
         about: jobInput.value
     };
-    console.log (dataUserProfile);
+    //console.log (dataUserProfile);
     closePopup(popupProfile);
     //отправляем данные на сервер
     editUserProfile(dataUserProfile)   
 }
-
-
-
 
 //TODO: Дайте пользователю возможность добавлять карточки
 function handleCardSubmit (evt) {
@@ -91,6 +88,8 @@ function handleCardSubmit (evt) {
          alt: placeAlt,
         link: placeLink
         };
+    //добавление карточки
+    addNewCard(newPlaceCard)
     //выводим первой новую карточку
     placeList.prepend(createCard(newPlaceCard, deleteCard, openPopupImage));
     //очищаем поля модалки

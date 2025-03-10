@@ -44,10 +44,28 @@ export const editUserProfile = (userUpdateInfo) => {
   return fetch(`${configApi.baseUrl}/users/me`, {
     method: 'PATCH',
     headers: configApi.headers ,
-    body: JSON.stringify(userUpdateInfo)
+    body: JSON.stringify({
+      name: userUpdateInfo.name,
+      about: userUpdateInfo.about
   })
-  .then((res) => {
-    //return res.json();
-    console.log (res)
+  })
+}
+
+//Добавление новой карточки
+export const addNewCard = (newCardObj) => {
+  return fetch(`${configApi.baseUrl}/cards`, {
+    method: 'POST',
+    headers: configApi.headers ,
+    body: JSON.stringify({
+      name: newCardObj.name,
+      link: newCardObj.link
+    })
+})
+}
+
+//Отображение количества лайков карточки
+export const likeCounter = () => {
+  return fetch(`${configApi.baseUrl}/cards`, {
+    headers: configApi.headers 
   })
 }
