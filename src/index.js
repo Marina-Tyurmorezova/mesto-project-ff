@@ -3,7 +3,7 @@ import {initialCards} from './components/cards.js';
 import {createCard, deleteCard, isLiked} from './components/card.js';
 import {openPopup, closePopup, listenerPopupOverlay, keydownListener, smoothAnimationPopup} from './components/modal.js';
 import {ValidationConfig, enableValidation, clearValidation} from './components/validation.js';
-import { getInitialUser , getCardList, editUserProfile, addNewCard} from './components/api.js';
+import { getInitialUser , getCardList, editUserProfile, addNewCard, likeCounter} from './components/api.js';
 import { data } from 'autoprefixer';
 
 // кнопки
@@ -35,6 +35,7 @@ const profileDescriptionPopupDefault = document.forms['edit-profile'].elements.d
 const avatarUser = document.querySelector('.profile__image');
 //для работы с Id пользователя
 let userId = null;
+
 //для загрузки данных пользователя и карточек 
 Promise.all([getInitialUser(),getCardList()])
 .then(([data, cardData]) => {
@@ -42,11 +43,15 @@ Promise.all([getInitialUser(),getCardList()])
     profileName.textContent = data.name;
     profileDescription.textContent = data.about;
     avatarUser.style.textContent = data.avatar;
+    
     //вывод карточек с сервера
     cardData.forEach(function(cardItem) {
-        placeList.append(createCard(cardItem, deleteCard, openPopupImage));
-    })
-})
+        //подсчет лайков
+        const counter = cardItem.likes.length;
+        //вывод списка карточек
+        placeList.append(createCard(cardItem, deleteCard, openPopupImage, counter));
+        }) 
+  })
 
 
 //TODO: При открытии формы поля «Имя» и «О себе» должны быть заполнены теми значениями, которые отображаются на странице.

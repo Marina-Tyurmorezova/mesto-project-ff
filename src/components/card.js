@@ -1,10 +1,13 @@
 // @todo: Темплейт карточки 
+
+import { likeCounter } from "./api";
+
 // - получаем доступ к содержимому шаблона
 const cardTemplate = document.querySelector('#card-template').content;
 
 // @todo: Функция создания карточки
 //написать функцию, которая принимает в аргументах данные одной карточки и функцию-колбэк для удаления, а возвращает подготовленный к выводу элемент карточки
-export function createCard (cardItem, deleteCall, viewingPopupImage) {
+export function createCard (cardItem, deleteCall, viewingPopupImage, likeCounterItem) {
     // - клонируем элементы шаблона
     const cardUser = cardTemplate.cloneNode(true);
     // - устанавливаем значения вложенных элементов
@@ -22,6 +25,9 @@ export function createCard (cardItem, deleteCall, viewingPopupImage) {
     // Функция обработчика лайка в функции создания карточки 
     const buttonLike = cardUser.querySelector('.card__like-button');
     buttonLike.addEventListener('click', likedCard);
+    //Определяем счетчик лайка 
+    const showLikeCounter = cardUser.querySelector('.card__like-counter');
+    showLikeCounter.textContent = likeCounterItem;
     //обработчик клика по картинки для открытия модального окна просмотра
     const imgCard = cardUser.querySelector('.card__image');
     imgCard.addEventListener('click', () => {

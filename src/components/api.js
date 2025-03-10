@@ -65,7 +65,7 @@ export const addNewCard = (newCardObj) => {
 
 //Отображение количества лайков карточки
 export const likeCounter = () => {
-  return fetch(`${configApi.baseUrl}/cards`, {
-    headers: configApi.headers 
+  return fetch(`${configApi.baseUrl}/cards/`, {
+    headers: configApi.headers
   })
 }
