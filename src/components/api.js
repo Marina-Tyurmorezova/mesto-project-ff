@@ -63,9 +63,10 @@ export const addNewCard = (newCardObj) => {
 })
 }
 
-//Отображение количества лайков карточки
-export const likeCounter = () => {
-  return fetch(`${configApi.baseUrl}/cards/`, {
-    headers: configApi.headers
-  })
+//удаление карточки с сервера
+export const deleteCardApi = (cardId) => {
+  return fetch(`${configApi.baseUrl}/cards/${cardId}`, {
+    method: 'DELETE',
+    headers: configApi.headers,
+})
 }

@@ -3,7 +3,7 @@ import {initialCards} from './components/cards.js';
 import {createCard, deleteCard, isLiked} from './components/card.js';
 import {openPopup, closePopup, listenerPopupOverlay, keydownListener, smoothAnimationPopup} from './components/modal.js';
 import {ValidationConfig, enableValidation, clearValidation} from './components/validation.js';
-import { getInitialUser , getCardList, editUserProfile, addNewCard, likeCounter} from './components/api.js';
+import { getInitialUser , getCardList, editUserProfile, addNewCard, deleteCardApi} from './components/api.js';
 import { data } from 'autoprefixer';
 
 // кнопки
@@ -33,8 +33,6 @@ const profileDescription = document.querySelector('.profile__description');
 const profileNamePopupDefault = document.forms['edit-profile'].elements.name;
 const profileDescriptionPopupDefault = document.forms['edit-profile'].elements.description;
 const avatarUser = document.querySelector('.profile__image');
-//для работы с Id пользователя
-let userId = null;
 
 //для загрузки данных пользователя и карточек 
 Promise.all([getInitialUser(),getCardList()])
@@ -43,16 +41,25 @@ Promise.all([getInitialUser(),getCardList()])
     profileName.textContent = data.name;
     profileDescription.textContent = data.about;
     avatarUser.style.textContent = data.avatar;
-    
+    const userId = data['_id'];
+       
     //вывод карточек с сервера
     cardData.forEach(function(cardItem) {
         //подсчет лайков
         const counter = cardItem.likes.length;
+        const ownerId = cardItem.owner['_id'];
+        const cardId = cardItem['_id'];
         //вывод списка карточек
-        placeList.append(createCard(cardItem, deleteCard, openPopupImage, counter));
-        }) 
+        placeList.append(createCard(cardItem, deleteCard, openPopupImage, counter, ownerId, userId, cardId, deleteCardItem));
+        })     
   })
 
+//УДАЛЕНИЕ КАРТОЧКИ
+function deleteCardItem (cardItem) {
+    deleteCardApi(cardItem)
+.then (() => cardItem.remove)
+console.log(cardItem);
+}
 
 //TODO: При открытии формы поля «Имя» и «О себе» должны быть заполнены теми значениями, которые отображаются на странице.
 function editProfileDataDefault () {
@@ -96,14 +103,14 @@ function handleCardSubmit (evt) {
     //добавление карточки
     addNewCard(newPlaceCard)
     //выводим первой новую карточку
-    placeList.prepend(createCard(newPlaceCard, deleteCard, openPopupImage));
+    placeList.prepend(createCard(newPlaceCard, deleteCard, openPopupImage, counter, ownerId, userId, cardId));
     //очищаем поля модалки
     formCard.reset();
     //закрываем модалку
     closePopup(popupPlaceAdd );
  }
 
- //TODO: Открытие попапа с картинкой
+ //Открытие попапа с картинкой
  function openPopupImage (imageLink,imageAlt) {
     popupImage.querySelector('.popup__image').src = imageLink;
     popupImage.querySelector('.popup__image').alt = imageAlt
@@ -135,6 +142,7 @@ buttonAddPlace.addEventListener('click', () => {
     clearValidation(popupPlaceAdd, ValidationConfig);
 })
 
+
 //закрытие модального окна по клику на крестик
 buttonClosePopupList.forEach((evt) => {
     evt.addEventListener('click', () => {
@@ -146,12 +154,13 @@ buttonClosePopupList.forEach((evt) => {
 //слушатель клика по оверлэю для каждого модального окна
 popupProfile.addEventListener('click', listenerPopupOverlay);
 popupPlaceAdd .addEventListener('click', listenerPopupOverlay);
-popupImage.addEventListener('click', listenerPopupOverlay); 
+popupImage.addEventListener('click', listenerPopupOverlay);
 
 //слушатель отправки формы при редактировании профиля
 formEditProfileElement.addEventListener ('submit', handleSubmitEditProfile);
 //слушатель отправки формы при добавлении новой карточки
 formCard.addEventListener ('submit', handleCardSubmit);
+
 
 //ПР7:  ---------------------------------------------------------------------------
 // включение валидации вызовом enableValidation все настройки передаются при вызове
