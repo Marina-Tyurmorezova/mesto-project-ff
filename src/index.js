@@ -34,6 +34,8 @@ const profileNamePopupDefault = document.forms['edit-profile'].elements.name;
 const profileDescriptionPopupDefault = document.forms['edit-profile'].elements.description;
 const avatarUser = document.querySelector('.profile__image');
 
+let cardDeleteObj = null;
+
 //для загрузки данных пользователя и карточек 
 Promise.all([getInitialUser(),getCardList()])
 .then(([data, cardData]) => {
@@ -42,23 +44,33 @@ Promise.all([getInitialUser(),getCardList()])
     profileDescription.textContent = data.about;
     avatarUser.style.textContent = data.avatar;
     const userId = data['_id'];
-       
     //вывод карточек с сервера
     cardData.forEach(function(cardItem) {
         //подсчет лайков
         const counter = cardItem.likes.length;
         const ownerId = cardItem.owner['_id'];
-        const cardId = cardItem['_id'];
+       // const cardId = cardItem['_id'];
         //вывод списка карточек
-        placeList.append(createCard(cardItem, deleteCard, openPopupImage, counter, ownerId, userId, cardId, deleteCardItem));
+    placeList.append(createCard(cardItem, deleteCardItem, openPopupImage, counter, userId, ownerId));
         })     
+  })
+  .catch((err) => {
+    console.error('Ошибка при добавлении карточки:', err);
   })
 
 //УДАЛЕНИЕ КАРТОЧКИ
-function deleteCardItem (cardItem) {
-    deleteCardApi(cardItem)
-.then (() => cardItem.remove)
-console.log(cardItem);
+function deleteCardItem (cardUser, cardId) {
+   cardDeleteObj = {cardUser, cardId}
+    deleteCardApi(cardId)
+    .then(()=> {
+        cardUser.remove();
+    })
+    .catch((err) => {
+        console.error('Ошибка при удалении карточки:', err);
+      })
+    .finally(() => {
+       cardDeleteObj = null;
+     });
 }
 
 //TODO: При открытии формы поля «Имя» и «О себе» должны быть заполнены теми значениями, которые отображаются на странице.
@@ -103,9 +115,8 @@ function handleCardSubmit (evt) {
     //добавление карточки
     addNewCard(newPlaceCard)
     //выводим первой новую карточку
-    placeList.prepend(createCard(newPlaceCard, deleteCard, openPopupImage, counter, ownerId, userId, cardId));
-    //очищаем поля модалки
-    formCard.reset();
+  //  placeList.prepend(createCard(newPlaceCard, deleteCard, openPopupImage)); deleteCardItem
+    placeList.prepend(createCard(newPlaceCard, deleteCardItem, openPopupImage)); 
     //закрываем модалку
     closePopup(popupPlaceAdd );
  }

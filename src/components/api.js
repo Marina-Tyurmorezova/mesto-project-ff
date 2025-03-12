@@ -8,21 +8,20 @@ const configApi = {
     }
   }
 
+function getResponse(res) {
+  if (res.ok) {
+    return res.json();
+  }
+   // если ошибка, отклоняем промис
+    return Promise.reject(`Ошибка: ${res.status}`);
+}
+
 // Загрузка информации о пользователе с сервера
-//GET https://mesto.nomoreparties.co/v1/:wff-cohort-31/users/me 
-//Используйте свойства name, about и avatar в соответствующих элементах шапки страницы. 
-// Свойство _id — идентификатор пользователя, в данном случае вашего.
 export const getInitialUser = () => {
     return fetch(`${configApi.baseUrl}/users/me`, {
       headers: configApi.headers
     })
-    .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-         // если ошибка, отклоняем промис
-          return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(getResponse);
 } 
 
 
@@ -31,12 +30,7 @@ export const getCardList = () => {
   return fetch(`${configApi.baseUrl}/cards`, {
     headers: configApi.headers
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-      return Promise.reject(`Ошибка: ${res.status}`);
-})
+  .then(getResponse);
 }
 
 //Редактирование профиля
@@ -49,6 +43,7 @@ export const editUserProfile = (userUpdateInfo) => {
       about: userUpdateInfo.about
   })
   })
+  .then(getResponse);
 }
 
 //Добавление новой карточки
@@ -61,12 +56,14 @@ export const addNewCard = (newCardObj) => {
       link: newCardObj.link
     })
 })
+.then(getResponse);
 }
 
 //удаление карточки с сервера
 export const deleteCardApi = (cardId) => {
   return fetch(`${configApi.baseUrl}/cards/${cardId}`, {
     method: 'DELETE',
-    headers: configApi.headers,
+    headers: configApi.headers
 })
+.then(getResponse);
 }

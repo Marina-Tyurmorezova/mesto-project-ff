@@ -5,9 +5,9 @@ const cardTemplate = document.querySelector('#card-template').content;
 
 // @todo: Функция создания карточки
 //написать функцию, которая принимает в аргументах данные одной карточки и функцию-колбэк для удаления, а возвращает подготовленный к выводу элемент карточки
-export function createCard (cardItem, deleteCall, viewingPopupImage, likeCounterItem, ownerId, userId, cardId, deleteCardItem) {
+export function createCard (cardItem, deleteCardItem, viewingPopupImage, likeCounterItem, userId, ownerId) {
     // - клонируем элементы шаблона
-    const cardUser = cardTemplate.cloneNode(true);
+    const cardUser = cardTemplate.querySelector('.card').cloneNode(true);
     // - устанавливаем значения вложенных элементов
     cardUser.querySelector('.card__image').src = cardItem.link;
     cardUser.querySelector('.card__image').alt = cardItem.name;
@@ -17,10 +17,11 @@ export function createCard (cardItem, deleteCall, viewingPopupImage, likeCounter
     //если карточка создана нами добавляем обработчик на кнопку удаления карточки
     if (userId === ownerId) {
     // - добавить к иконке удаления обработчик клика, по которому будет вызван переданный в аргументах колбэк
-    buttonDelete.addEventListener('click', ()=> {        
+    buttonDelete.addEventListener('click', ()=> {
     // - выбираем ближайший родительский элемент с переданным селектором
-        const itemPlaces = buttonDelete.closest('.places__item');
-        deleteCardItem(cardId);       
+      // const itemPlaces = buttonDelete.closest('.places__item');
+       // deleteCardItem(cardId);  
+       deleteCardItem(cardUser, cardItem._id);
     })
     }
      else 
