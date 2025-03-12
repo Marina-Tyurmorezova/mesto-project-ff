@@ -67,3 +67,21 @@ export const deleteCardApi = (cardId) => {
 })
 .then(getResponse);
 }
+
+//постановка лайка карточки
+export const likedCardApi = (cardId) => {
+  return fetch(`${configApi.baseUrl}/cards/likes/${cardId}`, {
+    method: 'PUT',
+    headers: configApi.headers
+})
+.then(getResponse);
+}
+
+//удаление лайка карточки
+export const dislikedCardApi = (cardId) => {
+  return fetch(`${configApi.baseUrl}/cards/likes/${cardId}`, {
+    method: 'DELETE',
+    headers: configApi.headers
+})
+.then(getResponse);
+}

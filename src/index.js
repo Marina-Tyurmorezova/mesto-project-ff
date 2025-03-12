@@ -1,6 +1,6 @@
 import './pages/index.css';
 import {initialCards} from './components/cards.js';
-import {createCard, deleteCard, isLiked} from './components/card.js';
+import {createCard, deleteCard, likedCard} from './components/card.js';
 import {openPopup, closePopup, listenerPopupOverlay, keydownListener, smoothAnimationPopup} from './components/modal.js';
 import {ValidationConfig, enableValidation, clearValidation} from './components/validation.js';
 import { getInitialUser , getCardList, editUserProfile, addNewCard, deleteCardApi} from './components/api.js';
@@ -51,7 +51,7 @@ Promise.all([getInitialUser(),getCardList()])
         const ownerId = cardItem.owner['_id'];
        // const cardId = cardItem['_id'];
         //вывод списка карточек
-    placeList.append(createCard(cardItem, deleteCardItem, openPopupImage, counter, userId, ownerId));
+    placeList.append(createCard(cardItem, deleteCardItem, openPopupImage, likedCard, userId, ownerId));
         })     
   })
   .catch((err) => {
@@ -114,11 +114,15 @@ function handleCardSubmit (evt) {
         };
     //добавление карточки
     addNewCard(newPlaceCard)
+    .catch((err) => {
+        console.error('Ошибка при добавлении карточки:', err);
+      })
     //выводим первой новую карточку
   //  placeList.prepend(createCard(newPlaceCard, deleteCard, openPopupImage)); deleteCardItem
-    placeList.prepend(createCard(newPlaceCard, deleteCardItem, openPopupImage)); 
+    placeList.prepend(createCard(newPlaceCard, deleteCardItem, openPopupImage, likedCard)); 
     //закрываем модалку
     closePopup(popupPlaceAdd );
+    popupPlaceAdd.reset();
  }
 
  //Открытие попапа с картинкой
