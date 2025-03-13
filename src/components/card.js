@@ -18,6 +18,8 @@ export function createCard (cardItem, deleteCardItem, viewingPopupImage, likedCa
     cardUser.querySelector('.card__image').src = cardItem.link;
     cardUser.querySelector('.card__image').alt = cardItem.name;
     cardUser.querySelector('.card__title').textContent = cardItem.name;
+    likeCounter.textContent = cardItem.likes.length;
+
 
       
     //если карточка создана нами добавляем обработчик на кнопку удаления карточки
@@ -39,12 +41,7 @@ export function createCard (cardItem, deleteCardItem, viewingPopupImage, likedCa
     // Функция обработчика лайка в функции создания карточки 
     buttonLike.addEventListener('click', () =>  likedCard(buttonLike, cardItem ,likeCounter));
 
-    //выводим 0 если нет лайков, если есть - количество лайков
-    if (cardItem.likes.length !== null ) {
-        likeCounter.textContent = cardItem.likes.length;
-    } else {
-        likeCounter.textContent = 0;
-    }
+    //likeCounter.textContent = cardItem.likes.length;
 
     const isLiked = cardItem.likes.some((like) => like._id === userId);
     //console.log (like._id);

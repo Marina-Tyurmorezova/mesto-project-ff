@@ -19,6 +19,7 @@ function getResponse(res) {
 // Загрузка информации о пользователе с сервера
 export const getInitialUser = () => {
     return fetch(`${configApi.baseUrl}/users/me`, {
+      method: 'GET',
       headers: configApi.headers
     })
     .then(getResponse);
@@ -28,6 +29,7 @@ export const getInitialUser = () => {
 //Загрузка карточек с сервера GET https://mesto.nomoreparties.co/v1/wff-cohort-31/cards 
 export const getCardList = () => {
   return fetch(`${configApi.baseUrl}/cards`, {
+    method: 'GET',
     headers: configApi.headers
   })
   .then(getResponse);
@@ -84,4 +86,16 @@ export const dislikedCardApi = (cardId) => {
     headers: configApi.headers
 })
 .then(getResponse);
+}
+
+//обновление аватара
+export const editUserAvatarApi = (avatarUser) => {
+  return fetch(`${configApi.baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: configApi.headers ,
+    body: JSON.stringify({
+      avatar: avatarUser
+  })
+  })
+  .then(getResponse)
 }
