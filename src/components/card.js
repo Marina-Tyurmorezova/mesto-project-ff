@@ -26,9 +26,6 @@ export function createCard (cardItem, deleteCardItem, viewingPopupImage, likedCa
     if (userId === ownerId) {
     // - добавить к иконке удаления обработчик клика, по которому будет вызван переданный в аргументах колбэк
     buttonDelete.addEventListener('click', ()=> {
-    // - выбираем ближайший родительский элемент с переданным селектором
-      // const itemPlaces = buttonDelete.closest('.places__item');
-       // deleteCardItem(cardId);  
        deleteCardItem(cardUser, cardItem._id);
     })
     }
@@ -41,13 +38,10 @@ export function createCard (cardItem, deleteCardItem, viewingPopupImage, likedCa
     // Функция обработчика лайка в функции создания карточки 
     buttonLike.addEventListener('click', () =>  likedCard(buttonLike, cardItem ,likeCounter));
 
-    //likeCounter.textContent = cardItem.likes.length;
+    const isLiked = cardItem.likes.some((user) => user._id === userId);
 
-    const isLiked = cardItem.likes.some((like) => like._id === userId);
-    //console.log (like._id);
        if (isLiked) {
         buttonLike.classList.toggle('card__like-button_is-active');
-        //likeCounter.textContent = cardItem.likes.length;
     }
     
     //обработчик клика по картинки для открытия модального окна просмотра
@@ -73,9 +67,7 @@ export function likedCard(buttonLike, cardItem, likeCounter) {
     likeDefinition(cardId)
     .then((updateCounter) => {
         buttonLike.classList.toggle('card__like-button_is-active');
-        likeCounter.textContent = updateCounter.likes.length;
-        console.log (likeDefinition);
-        
+        likeCounter.textContent = updateCounter.likes.length;        
     })
     .catch (err => console.log(err));
 };

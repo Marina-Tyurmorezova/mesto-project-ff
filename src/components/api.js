@@ -26,7 +26,7 @@ export const getInitialUser = () => {
 } 
 
 
-//Загрузка карточек с сервера GET https://mesto.nomoreparties.co/v1/wff-cohort-31/cards 
+//Загрузка карточек с сервера 
 export const getCardList = () => {
   return fetch(`${configApi.baseUrl}/cards`, {
     method: 'GET',

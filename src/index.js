@@ -47,23 +47,19 @@ Promise.all([getInitialUser(),getCardList()])
     //получение данных пользователя
     profileName.textContent = data.name;
     profileDescription.textContent = data.about;
-   // avatarUser.style.textContent = data.avatar;
-   // avatarUser.style.textContent = data.avatar;
     avatarUser.style.backgroundImage = `url(${data.avatar})`
-   // console.log(avatarUser.style.textContent);
     const userId = data['_id'];
     //вывод карточек с сервера
     cardData.forEach(function(cardItem) {
         //подсчет лайков
         const counter = cardItem.likes.length;
         const ownerId = cardItem.owner['_id'];
-       // const cardId = cardItem['_id'];
         //вывод списка карточек
     placeList.append(createCard(cardItem, deleteCardItem, openPopupImage, likedCard, userId, ownerId));
         })     
   })
   .catch((err) => {
-    console.error('Ошибка при добавлении карточки:', err);
+    console.error('Ошибка добавления карточки:', err);
   })
 
 //УДАЛЕНИЕ КАРТОЧКИ
@@ -74,7 +70,7 @@ function deleteCardItem (cardUser, cardId) {
         cardUser.remove();
     })
     .catch((err) => {
-        console.error('Ошибка при удалении карточки:', err);
+        console.error('Ошибка удаления карточки:', err);
       })
     .finally(() => {
        cardDeleteObj = null;
@@ -92,29 +88,30 @@ function editProfileDataDefault () {
 //TODO: Редактирование имени и информации о себе (SUBMIT по шаблону из задания) 
 function handleSubmitEditProfile (evt) {
     evt.preventDefault();
-  //  const name = nameInput.value; 
-   // const job = jobInput.value; 
-   // nameProfile.textContent = name;
-    //descProfile.textContent = job;
-
+    
     //создаем объект с новыми данными пользователя
     const dataUserProfile = {
         name: nameInput.value,
         about: jobInput.value
     };
+
+    const buttonSubmit = popupProfile.querySelector('.popup__button');
+    buttonSubmit.textContent = 'Сохранение...';
  
     //отправляем данные на сервер
     editUserProfile(dataUserProfile)
     .then((userData) => {
         nameProfile.textContent = userData.name;
         descProfile.textContent = userData.about;
-       // avatarUser.style.textContent = userData.avatar;
         avatarUser.style.backgroundImage = `url(${userData.avatar})`
     closePopup(popupProfile);
     })  
     .catch((err) => {
         console.error('Ошибка обновления информации профиля:', err);
       }) 
+    .finally(() => {
+        buttonSubmit.textContent = 'Сохранить';
+      });
 }
 
 //TODO: Дайте пользователю возможность добавлять карточки
@@ -129,6 +126,10 @@ function handleCardSubmit (evt) {
          alt: placeAlt,
         link: placeLink
         };
+    
+    const buttonSubmit = popupPlaceAdd.querySelector('.popup__button');
+    buttonSubmit.textContent = 'Сохранение...';
+
     //добавление карточки
     addNewCard(newPlaceCard)
     .then((newPlaceCard) => {
@@ -139,8 +140,11 @@ function handleCardSubmit (evt) {
         popupPlaceAdd.reset;       
     })
     .catch((err) => {
-        console.error('Ошибка при добавлении карточки:', err);
+        console.error('Ошибка добавления карточки:', err);
       })
+    .finally(() => {
+        buttonSubmit.textContent = 'Сохранить';
+    });
 
  }
 
@@ -151,11 +155,6 @@ function handleCardSubmit (evt) {
     popupImage.querySelector('.popup__caption').textContent = imageAlt;
     openPopup(popupImage);
  }
-
-// @todo: Вывести карточки на страницу 
-//initialCards.forEach(function(cardItem) {
-//    placeList.append(createCard(cardItem, deleteCard, openPopupImage));
-//});
 
 //вызов функции добавляющей класс для плавного открытия и закрытия попапов
 popupList.forEach((popup) => {
@@ -198,15 +197,22 @@ formCard.addEventListener ('submit', handleCardSubmit);
 //слушатель отправки формы при изменении аватара
 formAvatarEdit.addEventListener('submit',(evt) => {
     evt.preventDefault();
- //   const addAvatarLink = linkAvatarInput.value;
- console.log(linkAvatarInput.value);
+
+    const buttonSubmit = popupAvatarEdit.querySelector('.popup__button');
+    buttonSubmit.textContent = 'Сохранение...';
+
     editUserAvatarApi(linkAvatarInput.value)    
     .then((res) => {
         avatarUser.style.textContent = res.avatar; 
         avatarUser.style.backgroundImage = `url(${res.avatar})`;  
         closePopup(popupAvatarEdit);     
-    }); 
-    
+    }) 
+    .catch((err) => {
+        console.error('Ошибка изменения аватара:', err); 
+      })
+    .finally(() => {
+        buttonSubmit.textContent = 'Сохранить';
+    });    
 })
 
 
@@ -214,7 +220,6 @@ editAvatarUser.addEventListener('click', () => {
     openPopup(popupAvatarEdit);
 })
 
-//ПР7:  ---------------------------------------------------------------------------
 // включение валидации вызовом enableValidation все настройки передаются при вызове
 enableValidation(ValidationConfig);
 
