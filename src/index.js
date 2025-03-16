@@ -75,8 +75,6 @@ Promise.all([getInitialUser(), getCardList()])
     userId = data["_id"];
     //вывод карточек с сервера
     cardData.forEach(function (cardItem) {
-      //подсчет лайков
-      const counter = cardItem.likes.length;
       //вывод списка карточек
       placeList.append(
         createCard(cardItem, deleteCardItem, openPopupImage, likedCard, userId)
@@ -89,7 +87,6 @@ Promise.all([getInitialUser(), getCardList()])
 
 //УДАЛЕНИЕ КАРТОЧКИ
 function deleteCardItem(cardUser, cardId) {
-  //const cardDeleteObj = { cardUser, cardId };
   deleteCardApi(cardId)
     .then(() => {
       deleteCard(cardUser);
@@ -263,7 +260,9 @@ formAvatarEdit.addEventListener("submit", (evt) => {
 });
 
 avatarUser.addEventListener("click", () => {
+  clearValidation(formAvatarEdit, validationConfig);
   openPopup(popupAvatarEdit);
+  formAvatarEdit.reset();
 });
 
 // включение валидации вызовом enableValidation все настройки передаются при вызове

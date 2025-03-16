@@ -11,7 +11,6 @@ export function createCard(
   viewingPopupImage,
   likedCard,
   userId
-  //ownerId
 ) {
   // - клонируем элементы шаблона
   const cardUser = cardTemplate.querySelector(".card").cloneNode(true);
@@ -46,14 +45,13 @@ export function createCard(
     likedCard(buttonLike, cardItem, likeCounter, isLiked)
   );
 
-  const isLiked = cardItem.likes.some((user) => user._id === userId);
+  const isLiked = cardItem.likes.some((likeUser) => likeUser._id === userId);
 
   if (isLiked) {
-    buttonLike.classList.toggle("card__like-button_is-active");
+    buttonLike.classList.add("card__like-button_is-active");
   }
 
   //обработчик клика по картинки для открытия модального окна просмотра
-  // const imgCard = cardUser.querySelector(".card__image");
   imgCard.addEventListener("click", () => {
     viewingPopupImage(imgCard.src, imgCard.alt);
   });
@@ -69,8 +67,6 @@ export function deleteCard(itemPlaces) {
 //TODO: Лайк карточки
 //Если лайкнуть карточку, сердечко поменяет цвет
 export function likedCard(buttonLike, cardItem, likeCounter, isLiked) {
-  //const isLiked = buttonLike.classList.contains("card__like-button_is-active");
-  //console.log(cardItem._id , isLiked);
   const likeDefinition = isLiked ? dislikedCardApi : likedCardApi;
   const cardId = cardItem._id;
   likeDefinition(cardId)
