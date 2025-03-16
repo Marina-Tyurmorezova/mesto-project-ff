@@ -49,7 +49,7 @@ export function createCard(
 
   if (isLiked) {
     buttonLike.classList.add("card__like-button_is-active");
-  }
+  };
 
   //обработчик клика по картинки для открытия модального окна просмотра
   imgCard.addEventListener("click", () => {
