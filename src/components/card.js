@@ -42,14 +42,14 @@ export function createCard(
 
   // Функция обработчика лайка в функции создания карточки
   buttonLike.addEventListener("click", () =>
-    likedCard(buttonLike, cardItem, likeCounter, isLiked)
+    likedCard(buttonLike, cardItem, likeCounter)
   );
 
   const isLiked = cardItem.likes.some((likeUser) => likeUser._id === userId);
 
   if (isLiked) {
     buttonLike.classList.add("card__like-button_is-active");
-  };
+  }
 
   //обработчик клика по картинки для открытия модального окна просмотра
   imgCard.addEventListener("click", () => {
@@ -66,7 +66,8 @@ export function deleteCard(itemPlaces) {
 
 //TODO: Лайк карточки
 //Если лайкнуть карточку, сердечко поменяет цвет
-export function likedCard(buttonLike, cardItem, likeCounter, isLiked) {
+export function likedCard(buttonLike, cardItem, likeCounter) {
+  const isLiked = buttonLike.classList.contains("card__like-button_is-active");
   const likeDefinition = isLiked ? dislikedCardApi : likedCardApi;
   const cardId = cardItem._id;
   likeDefinition(cardId)
